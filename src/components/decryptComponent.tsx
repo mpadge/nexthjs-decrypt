@@ -1,6 +1,6 @@
 import { useEffect, useState} from 'react';
 
-async function sendEncryptedData() {
+async function decryptData() {
     const path = '/data/test.aes';
     const encryptedData = await fetch(path);
     const arrayBuffer = await encryptedData.arrayBuffer();
@@ -41,14 +41,19 @@ async function sendEncryptedData() {
     // console.log("Decrypted Data: ", decryptedData);
     const decryptedData = await response.text();
     console.log("Decrypted Data: ", decryptedData);
+
+    return decryptedData;
 }
 
 const DecryptComponent = () => {
 
+    const [data, setData] = useState('');
+
     useEffect(() => {
         const loadData = async () => {
 
-            await sendEncryptedData();
+            const data = await decryptData();
+            setData(data);
         };
 
         loadData();
@@ -56,6 +61,7 @@ const DecryptComponent = () => {
 
     return (
         <>
+            <p>{data}</p>
         </>
     )
 }
