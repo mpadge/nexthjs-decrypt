@@ -46,24 +46,25 @@ export async function POST(request: any): Promise<Response> {
        decipher.setAutoPadding(false);
        // let decryptedData = decipher.update(encryptedData, 'undefined', 'utf8');
        // decryptedData += decipher.final('utf8');
-       let decryptedData = decipher.update(encryptedData);
-       decryptedData += decipher.final();
+       // let decryptedData = decipher.update(encryptedData);
+       // decryptedData += decipher.final();
        
+       // const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(symKeyBuffer), Buffer.from(iv));
+       // decipher.setAutoPadding(false);
+       // let decryptedData = decipher.update(encryptedData, 'undefined', 'utf8');
+       let decryptedData = decipher.update(encryptedData);
+       // decryptedData += decipher.final('utf8');
+       decryptedData = Buffer.concat([Buffer.from(decryptedData), Buffer.from(decipher.final('utf8'))]);
+       // decryptedData = Buffer.concat([decryptedData, decipher.final('utf8')]);
+       // decryptedData = decryptedData.toString('utf-8');
+
        // Remove the padding
        const padding = decryptedData[decryptedData.length - 1];
        if (padding > 0 && padding <= 16) {
          decryptedData = decryptedData.slice(0, decryptedData.length - padding);
        }
        
-       decryptedData = decryptedData.toString('utf8');
-
-       // const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(symKeyBuffer), Buffer.from(iv));
-       // decipher.setAutoPadding(false);
-       // let decryptedData = decipher.update(encryptedData, 'undefined', 'utf8');
-       // decryptedData += decipher.final('utf8');
-       // decryptedData = Buffer.concat([Buffer.from(decryptedData), Buffer.from(decipher.final('utf8'))]);
-       // decryptedData = Buffer.concat([decryptedData, decipher.final('utf8')]);
-       // decryptedData = decryptedData.toString('utf-8');
+       // decryptedData = decryptedData.toString('utf8');
 
        // resolve(new Response(decryptedData, { headers: { 'Content-Type': 'application/octet-stream' } }));
        resolve(new Response(decryptedData, { headers: { 'Content-Type': 'text/plain' } }));
