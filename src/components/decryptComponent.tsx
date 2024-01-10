@@ -45,11 +45,6 @@ async function sendEncryptedData() {
 
 const DecryptComponent = () => {
 
-    const mapPath1 = "/data/berlin/dataraw.json";
-    const mapPath2 = "/data/paris/dataraw.json";
-
-    // Effect to load 'dataraw' point-based data for source and target cities,
-    // and store as 'data1', 'data2':
     useEffect(() => {
         const loadData = async () => {
 
@@ -57,7 +52,7 @@ const DecryptComponent = () => {
         };
 
         loadData();
-        }, [mapPath1, mapPath2]);
+        });
 
     return (
         <>
