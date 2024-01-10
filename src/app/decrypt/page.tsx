@@ -2,13 +2,13 @@
 
 import Head from 'next/head'
 
-import Decrypt from '@/components/decrypt';
+import DecryptComponent from '@/components/decryptComponent';
 
 export default function Home() {
 
     return (
         <>
-        <Decrypt
+        <DecryptComponent
         />
         </>
     )
