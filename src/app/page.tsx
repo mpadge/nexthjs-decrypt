@@ -12,7 +12,7 @@ export default function Home() {
         <>
         <Head>
             <title>UA</title>
-            <meta name="description" content="Urban Analyses for the world" />
+            <meta name="description" content="decryption test" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <link rel="icon" href="/ua.ico" />
         </Head>
