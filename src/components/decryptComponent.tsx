@@ -1,13 +1,5 @@
 import { useEffect, useState} from 'react';
 
-async function getSymmetricKey() {
-    const keyPath = 'data/encrypted_symmetric_key.bin';
-    const encryptedSymmetricKey = await fetch(keyPath);
-    const encryptedSymmetricKeyBuffer = await encryptedSymmetricKey.arrayBuffer();
-
-    return encryptedSymmetricKeyBuffer;
-}
-
 async function sendEncryptedData() {
     const path = '/data/test.aes';
     const encryptedData = await fetch(path);
@@ -61,7 +53,6 @@ const DecryptComponent = () => {
     useEffect(() => {
         const loadData = async () => {
 
-            const keyBuffer = getSymmetricKey();
             await sendEncryptedData();
         };
 
