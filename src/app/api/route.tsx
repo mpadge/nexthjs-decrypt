@@ -1,23 +1,7 @@
 import * as crypto from 'crypto';
 
-function rsaKey(): crypto.KeyObject {
-   const key: string = process.env.RSA_PRIVATE_KEY || '';
-   const keycrypt = crypto.createPrivateKey(key);
-   return keycrypt;
-}
-
-export async function GET(request: any): Promise<Response> {
-   return new Promise((resolve, reject) => {
-       const rsakey = rsaKey();
-       const symKey = process.env.SYMMETRIC_KEY;
-
-       resolve(new Response("Hi there!"));
-   });
-}
-
 export async function POST(request: any): Promise<Response> {
    return new Promise(async (resolve, reject) => {
-       const rsakey = rsaKey();
        const symKeyBase64: string = process.env.SYMMETRIC_KEY || '';
 
        const symKeyBuffer = Buffer.from(symKeyBase64, 'base64');
@@ -53,8 +37,8 @@ export async function POST(request: any): Promise<Response> {
        // decipher.setAutoPadding(false);
        // let decryptedData = decipher.update(encryptedData, 'undefined', 'utf8');
        let decryptedData = decipher.update(encryptedData);
-       // decryptedData += decipher.final('utf8');
-       decryptedData = Buffer.concat([Buffer.from(decryptedData), Buffer.from(decipher.final('utf8'))]);
+       decryptedData += decipher.final('utf8');
+       // decryptedData = Buffer.concat([Buffer.from(decryptedData), Buffer.from(decipher.final('utf8'))]);
        // decryptedData = Buffer.concat([decryptedData, decipher.final('utf8')]);
        // decryptedData = decryptedData.toString('utf-8');
 
