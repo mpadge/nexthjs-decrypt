@@ -13,44 +13,29 @@ export async function POST(request: any): Promise<Response> {
        const iv = Buffer.from(request.headers.get('X-IV'), 'hex');
 
        // Get encrypted data from request body and convert to a Buffer
-       const arrayBuffer = await request.arrayBuffer();
-       const encryptedData = Buffer.from(arrayBuffer);
+       // const arrayBuffer = await request.arrayBuffer();
+       // const encryptedData = Buffer.from(arrayBuffer);
 
-       // const reader = request.body.getReader();
-       // let chunks = [];
-       // while (true) {
-       //     const { done, value } = await reader.read();
-       //     if (done) break;
-       //     chunks.push(Buffer.from(value));
-       // }
-       // const encryptedData = Buffer.concat(chunks);
+       let encryptedData = Buffer.alloc(0);
+       for await (const chunk of request.body) {
+          encryptedData = Buffer.concat([encryptedData, chunk]);
+       }
+       console.log('Length of encryptedData: ', encryptedData.length);
 
-       // const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(symKeyBuffer), Buffer.from(iv));
        const decipher = crypto.createDecipheriv('aes-256-cbc', symKeyBuffer, iv);
        decipher.setAutoPadding(false);
-       // let decryptedData = decipher.update(encryptedData, 'undefined', 'utf8');
-       // decryptedData += decipher.final('utf8');
-       // let decryptedData = decipher.update(encryptedData);
-       // decryptedData += decipher.final();
-       
-       // const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(symKeyBuffer), Buffer.from(iv));
-       // decipher.setAutoPadding(false);
-       // let decryptedData = decipher.update(encryptedData, 'undefined', 'utf8');
        let decryptedData = decipher.update(encryptedData);
-       decryptedData += decipher.final('utf8');
-       // decryptedData = Buffer.concat([Buffer.from(decryptedData), Buffer.from(decipher.final('utf8'))]);
-       // decryptedData = Buffer.concat([decryptedData, decipher.final('utf8')]);
-       // decryptedData = decryptedData.toString('utf-8');
+       decryptedData = Buffer.concat([decryptedData, decipher.final()]);
 
-       // Remove the padding
+       // Remove padding
        const padding = decryptedData[decryptedData.length - 1];
        if (padding > 0 && padding <= 16) {
-         decryptedData = decryptedData.slice(0, decryptedData.length - padding);
+           decryptedData = decryptedData.slice(0, decryptedData.length - padding);
        }
-       
-       // decryptedData = decryptedData.toString('utf8');
 
-       // resolve(new Response(decryptedData, { headers: { 'Content-Type': 'application/octet-stream' } }));
-       resolve(new Response(decryptedData, { headers: { 'Content-Type': 'text/plain' } }));
+       // Convert decrypted data to a string
+       const decryptedString = decryptedData.toString('utf8');
+
+       resolve(new Response(decryptedString, { headers: { 'Content-Type': 'text/plain' } }));
    });
 }
