@@ -2,7 +2,7 @@
 
 import Head from 'next/head'
 
-import Decrypt from '@/components/maps/map-mutate';
+import Decrypt from '@/components/decrypt';
 
 export default function Home() {
 
