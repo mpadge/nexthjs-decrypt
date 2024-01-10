@@ -20,7 +20,7 @@ export default function Home() {
             <div className={styles.description}>
                 <p>
                 <Link
-                href="/mutate"
+                href="/decrypt"
                 className={styles.card}
                 rel="noopener noreferrer"
                 >
