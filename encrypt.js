@@ -20,10 +20,12 @@ const clearEncoding = 'buffer';
 const cipherEncoding = 'binary';
 
 var encryptedData = [];
-encryptedData.push(cipher.update(Buffer.from(data, 'utf8'), clearEncoding, cipherEncoding));
-encryptedData.push(cipher.final(cipherEncoding));
+encryptedData.push(Buffer.from(cipher.update(Buffer.from(data)), clearEncoding, cipherEncoding));
+encryptedData.push(Buffer.from(cipher.final(cipherEncoding)));
+
+const encryptedBuffer = Buffer.concat(encryptedData);
 
 const outFile = 'public/data/test.aes';
-fs.writeFile(outFile, Buffer.from(encryptedData), (err) => {
+fs.writeFile(outFile, encryptedBuffer, (err) => {
        if (err) throw err;
 });
