@@ -20,12 +20,20 @@ const clearEncoding = 'buffer';
 const cipherEncoding = 'binary';
 
 var encryptedData = [];
-encryptedData.push(Buffer.from(cipher.update(Buffer.from(data)), clearEncoding, cipherEncoding));
-encryptedData.push(Buffer.from(cipher.final(cipherEncoding)));
+encryptedData.push(cipher.update(Buffer.from(data, 'utf8'), clearEncoding, cipherEncoding));
+encryptedData.push(cipher.final(cipherEncoding));
 
-const encryptedBuffer = Buffer.concat(encryptedData);
+let encryptedDataBuffer = Buffer.concat(encryptedData.map(chunk => Buffer.from(chunk, 'binary')));
+console.log('Length of cipherData: ', encryptedDataBuffer.length);
+console.log('-----cipherData: ', encryptedDataBuffer);
 
 const outFile = 'public/data/test.aes';
-fs.writeFile(outFile, encryptedBuffer, (err) => {
-       if (err) throw err;
+fs.writeFile(outFile, encryptedDataBuffer, (err) => {
+    if (err) throw err;
 });
+
+var decipher0 = crypto.createDecipheriv(algorithm, symKeyBuffer, iv);
+var plainChunks = [];
+plainChunks.push(decipher0.update(encryptedDataBuffer, cipherEncoding, clearEncoding));
+plainChunks.push(decipher0.final(clearEncoding));
+console.log("UTF8 plaintext deciphered: " + plainChunks.join(''));
