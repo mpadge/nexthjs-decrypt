@@ -7,13 +7,14 @@ iv:
 	@echo 'public/data/iv.txt generated; now encrypt'
 
 key:
-	@openssl rand -base64 32 > symmetric_key.txt && \
+	@openssl rand -base64 16 > symmetric_key.txt && \
 	SYMMETRIC_KEY=$$(cat symmetric_key.txt) && \
 	echo SYMMETRIC_KEY=$$SYMMETRIC_KEY > .env.local
 	@echo 'symmetric_key.txt generated and added to .env.local'
 
 encrypt:
-	@openssl enc -aes-256-cbc -pbkdf2 -nosalt -in public/data/test.txt -out public/data/test.aes -pass file:symmetric_key.txt -iv $(shell cat public/data/iv.txt)
+	# @openssl enc -aes-256-cbc -pbkdf2 -iter 1000 -salt -in public/data/test.txt -out public/data/test.aes -pass file:symmetric_key.txt -iv $(shell cat public/data/iv.txt)
+	@openssl enc -aes-128-cbc -nosalt -in public/data/test.txt -out public/data/test.aes -pass file:symmetric_key.txt -iv $(shell cat public/data/iv.txt)
 	@echo 'public/data/test.aes generated'
 
 clean:
