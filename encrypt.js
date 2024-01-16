@@ -24,7 +24,7 @@ encryptedData.push(cipher.update(Buffer.from(data, 'utf8'), clearEncoding, ciphe
 encryptedData.push(cipher.final(cipherEncoding));
 
 let encryptedDataBuffer = Buffer.concat(encryptedData.map(chunk => Buffer.from(chunk, 'binary')));
-console.log('Length of cipherData: ', encryptedDataBuffer.length);
+// console.log('Length of cipherData: ', encryptedDataBuffer.length);
 console.log('-----cipherData: ', encryptedDataBuffer);
 
 const outFile = 'public/data/test.aes';
@@ -32,8 +32,17 @@ fs.writeFile(outFile, encryptedDataBuffer, (err) => {
     if (err) throw err;
 });
 
-var decipher0 = crypto.createDecipheriv(algorithm, symKeyBuffer, iv);
-var plainChunks = [];
-plainChunks.push(decipher0.update(encryptedDataBuffer, cipherEncoding, clearEncoding));
-plainChunks.push(decipher0.final(clearEncoding));
-console.log("UTF8 plaintext deciphered: " + plainChunks.join(''));
+const { exec } = require('child_process');
+exec(`xxd ${outFile}`, (error, stdout, stderr) => {
+   if (error) {
+       console.error(`exec error: ${error}`);
+       return;
+   }
+    console.log(`-----file Data: ${stdout}`);
+});
+
+// var decipher0 = crypto.createDecipheriv(algorithm, symKeyBuffer, iv);
+// var plainChunks = [];
+// plainChunks.push(decipher0.update(encryptedDataBuffer, cipherEncoding, clearEncoding));
+// plainChunks.push(decipher0.final(clearEncoding));
+// console.log("UTF8 plaintext deciphered: " + plainChunks.join(''));
