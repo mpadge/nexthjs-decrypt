@@ -25,13 +25,18 @@ encryptedData.push(cipher.final(cipherEncoding));
 
 let encryptedDataBuffer = Buffer.concat(encryptedData.map(chunk => Buffer.from(chunk, 'binary')));
 // console.log('Length of cipherData: ', encryptedDataBuffer.length);
+// Log the buffer contents to compare with values ultimately written to file
+// below:
 console.log('-----cipherData: ', encryptedDataBuffer);
 
+// Write that data to local file, used in main nextjs site as source to decrypt:
 const outFile = 'public/data/test.aes';
 fs.writeFile(outFile, encryptedDataBuffer, (err) => {
     if (err) throw err;
 });
 
+// These lines just log the byte-level contents of 'outFile' written in the
+// previous lines:
 const { exec } = require('child_process');
 exec(`xxd ${outFile}`, (error, stdout, stderr) => {
    if (error) {

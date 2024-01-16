@@ -12,6 +12,7 @@ key:
 	echo SYMMETRIC_KEY=$$SYMMETRIC_KEY > .env.local && \
 	cp .env.local .env && \
 	echo 'symmetric_key.txt generated and added to .env.local'
+# .env required for 'encrypt.js'; '.env.local' for nextjs
 
 # This should generate same, but doesn't?
 encrypt_ssh:
