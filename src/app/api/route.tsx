@@ -11,10 +11,10 @@ export async function POST(request: any): Promise<Response> {
            return;
        }
 
-       var algorithm = 'aes-128-cbc';
-       var clearEncoding: crypto.BinaryToTextEncoding = 'binary';
-       var cipherEncoding: crypto.BinaryToTextEncoding = 'binary';
-       var iv = Buffer.from(request.headers.get('X-IV'), 'hex');
+       const algorithm = 'aes-128-cbc';
+       const clearEncoding: crypto.BinaryToTextEncoding = 'binary';
+       const cipherEncoding: crypto.BinaryToTextEncoding = 'binary';
+       const iv = Buffer.from(request.headers.get('X-IV'), 'hex');
 
        const arrayBuffer = await request.arrayBuffer();
        const encryptedData = Buffer.from(arrayBuffer, 'binary');
