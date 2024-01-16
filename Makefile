@@ -7,7 +7,7 @@ iv:
 	@echo 'public/data/iv.txt generated'
 
 key:
-	@openssl rand -base64 16 > symmetric_key.txt && \
+	@openssl rand -base64 32 > symmetric_key.txt && \
 	SYMMETRIC_KEY=$$(cat symmetric_key.txt) && \
 	echo SYMMETRIC_KEY=$$SYMMETRIC_KEY > .env.local && \
 	cp .env.local .env && \

@@ -2,7 +2,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 require('dotenv').config();
 
-const algorithm = 'aes-128-cbc';
+const algorithm = 'aes-256-cbc';
 
 const symKeyBase64 = process.env.SYMMETRIC_KEY || '';
 const symKeyBuffer = Buffer.from(symKeyBase64, 'base64');
