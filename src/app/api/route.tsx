@@ -11,24 +11,20 @@ export async function POST(request: any): Promise<Response> {
        //     return;
        // }
 
-       // var data = JSON.stringify({someKey: "someValue"});
-       var data = 'A string of data to encrypt';
+       var data = 'TestText';
 
-       console.log('----------');
+       console.log('\n----------START--------');
        console.log('Original cleartext: ' + data);
        var algorithm = 'aes-128-cbc';
-       // var key = 'myVeryTopSecretK';
        var key = symKeyBuffer;
-       console.log('-----key: ', key);
        var clearEncoding = 'buffer';
        var cipherEncoding = 'binary';
 
        var iv = Buffer.from(request.headers.get('X-IV'), 'hex');
-       // console.log('-----iv0: ', iv);
        var cipher = crypto.createCipheriv(algorithm, key, iv);
 
        var cipherChunks = [];
-       cipherChunks.push(cipher.update(new Buffer(data, 'utf8'), clearEncoding, cipherEncoding));
+       cipherChunks.push(cipher.update(Buffer.from(data, 'utf8'), clearEncoding, cipherEncoding));
        cipherChunks.push(cipher.final(cipherEncoding));
 
        let cipherData = Buffer.concat(cipherChunks.map(chunk => Buffer.from(chunk, 'binary')));
@@ -37,40 +33,26 @@ export async function POST(request: any): Promise<Response> {
 
        var decipher0 = crypto.createDecipheriv(algorithm, key, iv);
        var plainChunks = [];
-       for (var i = 0;i < cipherChunks.length;i++) {
-           plainChunks.push(decipher0.update(cipherChunks[i], cipherEncoding, clearEncoding));
-
-       }
+       plainChunks.push(decipher0.update(cipherData, cipherEncoding, clearEncoding));
        plainChunks.push(decipher0.final(clearEncoding));
        console.log("UTF8 plaintext deciphered: " + plainChunks.join(''));
-       console.log('----------\n');
 
        // --------------------------------------------
 
        // Get encrypted data from request body and convert to a Buffer
+       const arrayBuffer = await request.arrayBuffer();
+       const encryptedData = Buffer.from(arrayBuffer, 'binary');
 
-       let encryptedData = [];
-       for await (const chunk of request.body) {
-           encryptedData.push(chunk);
-       }
-       encryptedData = Buffer.concat(encryptedData);
+       console.log('Length of encryptedData: ', encryptedData.length);
+       console.log('-----encryptedData: ', encryptedData);
+       console.log('----------END-------\n');
 
-       const decipher = crypto.createDecipheriv(algorithm, key, iv);
-       decipher.setAutoPadding(false);
-       console.log("--------A--------");
-       let decryptedData = decipher.update(encryptedData);
-       console.log("--------B--------");
-       decryptedData = Buffer.concat([decryptedData, decipher.final()]);
-       console.log("--------C--------");
+       var decipher1 = crypto.createDecipheriv(algorithm, key, iv);
+       var decryptedData = [];
+       decryptedData.push(decipher1.update(encryptedData, cipherEncoding, clearEncoding));
+       decryptedData.push(decipher1.final(clearEncoding));
 
-       // Remove padding
-       // const padding = decryptedData[decryptedData.length - 1];
-       // if (padding > 0 && padding <= 16) {
-       //     decryptedData = decryptedData.slice(0, decryptedData.length - padding);
-       // }
-
-       // Convert decrypted data to a string
-       const decryptedString = decryptedData.toString('utf8');
+       const decryptedString = decryptedData.join('');
 
        resolve(new Response(decryptedString, { headers: { 'Content-Type': 'text/plain' } }));
    });

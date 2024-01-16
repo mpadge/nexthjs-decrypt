@@ -4,6 +4,8 @@ async function decryptData() {
     const path = '/data/test.aes';
     const encryptedData = await fetch(path);
     const arrayBuffer = await encryptedData.arrayBuffer();
+    console.log('Length of encryptedData IN: ', arrayBuffer.byteLength);
+    console.log('-----encryptedData IN: ', Buffer.from(arrayBuffer).toString('hex'));
 
     const ivPath = '/data/iv.txt';
     const ivResponse = await fetch(ivPath);
